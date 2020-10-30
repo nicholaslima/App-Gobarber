@@ -1,8 +1,8 @@
 
 
 import React from 'react';
-import { View ,Text,Image,KeyboardAvoidingView,Platform,ScrollView } from 'react-native';
-import { Container,Title,NovaSenha,CriarConta,Footer } from './style';
+import { Image,KeyboardAvoidingView,Platform,ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import  Icon  from 'react-native-vector-icons/Feather';
 
@@ -10,7 +10,15 @@ import Logo from '../../Assets/Logo.png';
 import Input from '../../components/input';
 import Button from '../../components/button';
 
+import { Container,Title,NovaSenha,CriarConta,Footer } from './style';
+
 const SignIn:React.FC = () => {
+
+    const navigation = useNavigation();
+
+    const navigateToSignup = () => {
+        navigation.navigate('Signup');
+    }
     return(
     
     <>
@@ -32,7 +40,9 @@ const SignIn:React.FC = () => {
 
                 <NovaSenha>Esqueci minha senha</NovaSenha>
 
-                <Footer>
+                <Footer
+                    onPress={ navigateToSignup }
+                >
                     <Icon name="log-in" size={20} color="#ff9000"></Icon>
                     <CriarConta>
                         criar um conta
