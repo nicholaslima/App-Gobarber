@@ -1,8 +1,10 @@
 
 
-import React from 'react';
-import { Image,KeyboardAvoidingView,Platform,ScrollView } from 'react-native';
+import React,{ useRef,useCallback } from 'react';
+import { Image,KeyboardAvoidingView,Platform,ScrollView,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import  Icon  from 'react-native-vector-icons/Feather';
 
@@ -13,12 +15,20 @@ import Button from '../../components/button';
 import { Container,Title,NovaSenha,CriarConta,Footer } from './style';
 
 const SignIn:React.FC = () => {
+    const formRef = useRef<FormHandles>(null);
+    const inputEmailRef = useRef<TextInput>(null);
+    const inputPasswordlRef = useRef<TextInput>(null);
 
     const navigation = useNavigation();
 
     const navigateToSignup = () => {
         navigation.navigate('Signup');
-    }
+    };
+
+    const handleSignin = useCallback((data: Object) => {
+        console.log(data);
+    },[]);
+
     return(
     
     <>
@@ -33,10 +43,40 @@ const SignIn:React.FC = () => {
             <Container>
                 <Image source={ Logo } />
                 <Title>Faça seu logon</Title>
-                <Input icon="mail" name="text" placeholder="digite o email"/>
-                <Input icon="user" name="text" placeholder="digite a senha"/>
 
-                <Button>entrar</Button>
+                <Form ref={ formRef } onSubmit={ handleSignin }>
+                    <Input 
+                        ref={ inputEmailRef }
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                        returnKeyType="next"
+                        onSubmitEditing={() => {
+                            inputPasswordlRef.current?.focus();
+                        }}
+                        icon="mail" 
+                        name="email" 
+                        placeholder="digite o email"
+                    />
+                    <Input 
+                        ref={ inputPasswordlRef }
+                        icon="user"
+                        name="senha" 
+                        placeholder="digite a senha"
+                        secureTextEntry
+                        returnKeyType="send"
+                        onSubmitEditing={() => {
+                            formRef.current?.submitForm()
+                        }}
+                    />
+
+                    <Button 
+                        onPress={ () => formRef.current?.submitForm() }
+                    >
+                        entrar
+                    </Button>
+                </Form>
+               
 
                 <NovaSenha>Esqueci minha senha</NovaSenha>
 

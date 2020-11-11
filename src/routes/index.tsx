@@ -10,7 +10,7 @@ const App = createStackNavigator();
 const Routes:React.FC = () => {
     return(
         <App.Navigator
-            initialRouteName="Signup"
+            initialRouteName="Signin"
             screenOptions={{
                 headerShown: false,
                 cardStyle:{ backgroundColor: '#312e38' }
