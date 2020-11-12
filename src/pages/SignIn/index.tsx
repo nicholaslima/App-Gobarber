@@ -1,10 +1,13 @@
 
 
 import React,{ useRef,useCallback } from 'react';
-import { Image,KeyboardAvoidingView,Platform,ScrollView,TextInput } from 'react-native';
+import { Alert, Image,KeyboardAvoidingView,Platform,ScrollView,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import * as yup from 'yup';
+
+import getValidationErrors from '../../utils/validationErrors';
 
 import  Icon  from 'react-native-vector-icons/Feather';
 
@@ -13,6 +16,11 @@ import Input from '../../components/input';
 import Button from '../../components/button';
 
 import { Container,Title,NovaSenha,CriarConta,Footer } from './style';
+
+interface SigninType{
+    email: string;
+    password: string;
+}
 
 const SignIn:React.FC = () => {
     const formRef = useRef<FormHandles>(null);
@@ -25,8 +33,31 @@ const SignIn:React.FC = () => {
         navigation.navigate('Signup');
     };
 
-    const handleSignin = useCallback((data: Object) => {
-        console.log(data);
+    const handleSignin = useCallback(async (data: SigninType) => {
+        
+        try{
+            formRef.current?.setErrors({});
+
+            const schema = yup.object().shape({
+                email: yup.string().required('nome obrigatório'),
+                password: yup.string().required('senha obrigatória').email(),
+            })
+
+            await schema.validate(data,{
+                abortEarly: false,
+            });
+        }catch(err){
+            if(err instanceof yup.ValidationError){
+                const validationErrors = getValidationErrors(err);
+                formRef.current?.setErrors(validationErrors);
+                return;
+            }
+
+            Alert.alert(
+                'Erro na autencação',
+                'Ocorreu um erro ao fazer login'
+            )
+        }
     },[]);
 
     return(
@@ -61,7 +92,7 @@ const SignIn:React.FC = () => {
                     <Input 
                         ref={ inputPasswordlRef }
                         icon="user"
-                        name="senha" 
+                        name="password" 
                         placeholder="digite a senha"
                         secureTextEntry
                         returnKeyType="send"
