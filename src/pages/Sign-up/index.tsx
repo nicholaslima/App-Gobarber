@@ -4,6 +4,8 @@ import React,{ useCallback,useRef} from 'react';
 import { Alert, Image,KeyboardAvoidingView,ScrollView,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import validationError from '../../utils/validationErrors';
+import api from '../../service/api';
+
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -30,6 +32,7 @@ const Signup:React.FC = () => {
 
     const navigation = useNavigation();
 
+
     const navigateToLogin = () => {
         navigation.navigate('Signin');
     }
@@ -47,6 +50,12 @@ const Signup:React.FC = () => {
             await schema.validate(data,{
                 abortEarly: false
             });
+
+           await api.post('register',data);
+
+            Alert.alert('atenticação foi bem sucedida','você está pronto para fazer login');
+
+            navigation.goBack();
         }catch(err){
             if(err instanceof yup.ValidationError){
                 const Errors = validationError(err);

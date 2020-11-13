@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as yup from 'yup';
+import { useAuth } from '../../context/authContext';
 
 import getValidationErrors from '../../utils/validationErrors';
 
@@ -28,6 +29,7 @@ const SignIn:React.FC = () => {
     const inputPasswordlRef = useRef<TextInput>(null);
 
     const navigation = useNavigation();
+    const { signin } = useAuth();
 
     const navigateToSignup = () => {
         navigation.navigate('Signup');
@@ -39,13 +41,19 @@ const SignIn:React.FC = () => {
             formRef.current?.setErrors({});
 
             const schema = yup.object().shape({
-                email: yup.string().required('nome obrigatório'),
-                password: yup.string().required('senha obrigatória').email(),
+                email: yup.string().required('nome obrigatório').email(),
+                password: yup.string().required('senha obrigatória'),
             })
 
             await schema.validate(data,{
                 abortEarly: false,
             });
+
+            await signin({
+                email: data.email,
+                password: data.password,
+            });
+            
         }catch(err){
             if(err instanceof yup.ValidationError){
                 const validationErrors = getValidationErrors(err);
