@@ -41,13 +41,14 @@ const SignIn:React.FC = () => {
             formRef.current?.setErrors({});
 
             const schema = yup.object().shape({
-                email: yup.string().required('nome obrigatório').email(),
+                email: yup.string().required('E-mail é obrigatório').email('digite um email valido'),
                 password: yup.string().required('senha obrigatória'),
             })
 
             await schema.validate(data,{
                 abortEarly: false,
             });
+
 
             await signin({
                 email: data.email,
@@ -69,68 +70,67 @@ const SignIn:React.FC = () => {
     },[]);
 
     return(
-    
-    <>
-        <KeyboardAvoidingView
-            style={ {flex: 1 } }
-            behavior={ Platform.OS === 'ios' ? 'padding': undefined }
-            enabled>
-        <ScrollView
-            keyboardShouldPersistTaps="handled" 
-            contentContainerStyle={{flex: 1}}
-            >
-            <Container>
-                <Image source={ Logo } />
-                <Title>Faça seu logon</Title>
-
-                <Form ref={ formRef } onSubmit={ handleSignin }>
-                    <Input 
-                        ref={ inputEmailRef }
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                        returnKeyType="next"
-                        onSubmitEditing={() => {
-                            inputPasswordlRef.current?.focus();
-                        }}
-                        icon="mail" 
-                        name="email" 
-                        placeholder="digite o email"
-                    />
-                    <Input 
-                        ref={ inputPasswordlRef }
-                        icon="user"
-                        name="password" 
-                        placeholder="digite a senha"
-                        secureTextEntry
-                        returnKeyType="send"
-                        onSubmitEditing={() => {
-                            formRef.current?.submitForm()
-                        }}
-                    />
-
-                    <Button 
-                        onPress={ () => formRef.current?.submitForm() }
-                    >
-                        entrar
-                    </Button>
-                </Form>
-               
-
-                <NovaSenha>Esqueci minha senha</NovaSenha>
-
-                <Footer
-                    onPress={ navigateToSignup }
+        <>
+            <KeyboardAvoidingView
+                style={ {flex: 1 } }
+                behavior={ Platform.OS === 'ios' ? 'padding': undefined }
+                enabled>
+            <ScrollView
+                keyboardShouldPersistTaps="handled" 
+                contentContainerStyle={{flex: 1}}
                 >
-                    <Icon name="log-in" size={20} color="#ff9000"></Icon>
-                    <CriarConta>
-                        criar um conta
-                    </CriarConta>
-                </Footer>
-            </Container>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    </>
+                <Container>
+                    <Image source={ Logo } />
+                    <Title>Faça seu logon</Title>
+
+                    <Form ref={ formRef } onSubmit={ handleSignin }>
+                        <Input 
+                            ref={ inputEmailRef }
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            onSubmitEditing={() => {
+                                inputPasswordlRef.current?.focus();
+                            }}
+                            icon="mail" 
+                            name="email" 
+                            placeholder="digite o email"
+                        />
+                        <Input 
+                            ref={ inputPasswordlRef }
+                            icon="user"
+                            name="password" 
+                            placeholder="digite a senha"
+                            secureTextEntry
+                            returnKeyType="send"
+                            onSubmitEditing={() => {
+                                formRef.current?.submitForm()
+                            }}
+                        />
+
+                        <Button 
+                            onPress={ () => formRef.current?.submitForm() }
+                        >
+                            entrar
+                        </Button>
+                    </Form>
+                
+
+                    <NovaSenha>Esqueci minha senha</NovaSenha>
+
+                    <Footer
+                        onPress={ navigateToSignup }
+                    >
+                        <Icon name="log-in" size={20} color="#ff9000"></Icon>
+                        <CriarConta>
+                            criar um conta
+                        </CriarConta>
+                    </Footer>
+                </Container>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </>
     )
 }
 
