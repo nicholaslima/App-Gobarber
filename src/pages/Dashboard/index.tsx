@@ -3,7 +3,26 @@
 import React, { useEffect,useState } from 'react';
 import { Button } from 'react-native';
 import { useAuth } from '../../context/authContext';
-import { Container,Header,Avatar,HeaderTitle,UserName,ProvidersList,ProfileButton } from './style';
+import Icon from 'react-native-vector-icons/Feather';
+
+import { 
+    Container,
+    Header,
+    Avatar,
+    HeaderTitle,
+    UserName,
+    ProvidersList,
+    ProfileButton,
+    ProviderItem,
+    AvatarProvider,
+    DetailsProvider,
+    NameProvider,
+    AppointmentProvider,
+    AppointmentText,
+    ProviderListTitle   
+} from './style';
+
+
 import { useNavigation } from '@react-navigation/native';
 
 import api from '../../service/api';
@@ -33,17 +52,39 @@ const DashBoard: React.FC = () => {
             <Header>
                 <HeaderTitle>
                     Bem Vindo,{ '\n' }
-                    <UserName>nicholas lima</UserName>
+                    <UserName>{ user.name }</UserName>
                 </HeaderTitle>
                 <ProfileButton onPress={() => navigation.navigate('Profile')}>
                     <Avatar source={{ uri: user.avatar_url }}></Avatar>
                 </ProfileButton>
             </Header>
 
+            <ProviderListTitle>cabelereiros</ProviderListTitle>
+
             <ProvidersList
                 data={ providers }
                 keyExtractor={ provider => provider.id }
-                renderItem={ ({ item }) => <UserName>{ item.name }</UserName>
+                renderItem={ ({ item }) => (
+                    <ProviderItem>
+                        <AvatarProvider source={{ uri: item.avatar_url }} />
+
+                        <DetailsProvider>
+                            <NameProvider>
+                                { item.name }
+                            </NameProvider>
+
+                            <AppointmentProvider>
+                                <Icon name="calendar" size={14}  color="#ff9000" ></Icon>
+                                <AppointmentText>Segunda à sexta</AppointmentText>
+                            </AppointmentProvider>
+
+                            <AppointmentProvider>
+                                <Icon name="clock" size={14} color="#ff9000" ></Icon>
+                                <AppointmentText>8h às 18h</AppointmentText>
+                            </AppointmentProvider>
+                        </DetailsProvider>
+                    </ProviderItem>
+                )
             }
             />
 
