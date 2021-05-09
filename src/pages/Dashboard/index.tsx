@@ -1,9 +1,11 @@
 
 
-import React, { useEffect,useState } from 'react';
-import { Button } from 'react-native';
+import React, { useCallback, useEffect,useState } from 'react';
+import {  Button } from 'react-native';
 import { useAuth } from '../../context/authContext';
 import Icon from 'react-native-vector-icons/Feather';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { 
     Container,
@@ -19,11 +21,12 @@ import {
     NameProvider,
     AppointmentProvider,
     AppointmentText,
-    ProviderListTitle   
+    ProviderListTitle,
+    Sair   
 } from './style';
 
 
-import { useNavigation } from '@react-navigation/native';
+
 
 import api from '../../service/api';
 
@@ -39,6 +42,10 @@ const DashBoard: React.FC = () => {
 
     const { Logout,user } = useAuth();
     const navigation = useNavigation();
+
+    const navigateToCreateAppointment = useCallback((provider_id) => {
+        navigation.navigate('CreateAppointment',{ provider_id })
+    },[])
 
     useEffect( () => {
         api.get('providers/list') 
@@ -59,13 +66,15 @@ const DashBoard: React.FC = () => {
                 </ProfileButton>
             </Header>
 
-            <ProviderListTitle>cabelereiros</ProviderListTitle>
-
+            <Button title="sair" onPress={Logout}>sair</Button>
             <ProvidersList
                 data={ providers }
                 keyExtractor={ provider => provider.id }
+                ListHeaderComponent={
+                    <ProviderListTitle>cabelereiros</ProviderListTitle>
+                }
                 renderItem={ ({ item }) => (
-                    <ProviderItem>
+                    <ProviderItem onPress={ () => navigateToCreateAppointment(item.id)}>
                         <AvatarProvider source={{ uri: item.avatar_url }} />
 
                         <DetailsProvider>

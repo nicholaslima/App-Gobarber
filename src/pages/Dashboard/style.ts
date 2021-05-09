@@ -2,6 +2,8 @@
 
 import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { RectButton } from 'react-native-gesture-handler';
 import { Provider } from './index';
 
 export const Container = styled.View`
@@ -13,8 +15,10 @@ export const Header = styled.View`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-
-    padding: 25px;
+    padding-top:${ getStatusBarHeight() + 25}px;
+    padding-bottom: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
     background-color: #28262E;
 `;
 
@@ -46,7 +50,7 @@ export const ProvidersList = styled(FlatList as new () => FlatList<Provider>)`
 `;
 
 
-export const ProviderItem = styled.View`
+export const ProviderItem = styled(RectButton)`
     padding: 20px;
     margin-bottom: 16px;
     background-color:#3E3B47;
@@ -112,3 +116,7 @@ export const AppointmentText = styled.Text`
     margin-left: 10px;
 
 `;
+
+export const Sair = styled(RectButton)`
+
+`

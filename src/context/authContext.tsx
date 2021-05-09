@@ -70,6 +70,8 @@ const AuthProvider: React.FC = ({ children }) => {
            ['@Gobarber/user',JSON.stringify(user)]
        ]);
 
+       console.log({ token,user });
+
        setData({ token,user });
     },[]);
 
