@@ -23,10 +23,15 @@ interface DataType{
     token: string,
     user: userType,
 }
+
+interface signinType{
+    email: string;
+    password: string;
+}
 interface AuthContextType {
     user: userType;
     loading: boolean;
-    signin(credentials: userType): Promise<void>; 
+    signin(credentials: signinType): Promise<void>; 
     Logout(): Promise<void>
 }
 
@@ -56,7 +61,7 @@ const AuthProvider: React.FC = ({ children }) => {
     },[]);
     
 
-    const signin = useCallback(async ({email,password}) => {
+    const signin = useCallback(async ({email,password}: signinType) => {
        const response =  await axios.post('session/auth',{
            email,
            password
@@ -69,8 +74,6 @@ const AuthProvider: React.FC = ({ children }) => {
            ['@Gobarber/token',token ],
            ['@Gobarber/user',JSON.stringify(user)]
        ]);
-
-       console.log({ token,user });
 
        setData({ token,user });
     },[]);

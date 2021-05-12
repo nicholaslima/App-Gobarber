@@ -1,7 +1,7 @@
 
 
 import React,{ useCallback,useRef} from 'react';
-import { Alert, Image,KeyboardAvoidingView,ScrollView,TextInput } from 'react-native';
+import { Alert, Image,KeyboardAvoidingView,ScrollView,TextInput,Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import validationError from '../../utils/validationErrors';
 import api from '../../service/api';
@@ -50,31 +50,31 @@ const Signup:React.FC = () => {
             await schema.validate(data,{
                 abortEarly: false
             });
+            console.log(data);
+            await api.post('/users',data);
+           
 
-           await api.post('register',data);
-
-            Alert.alert('atenticação foi bem sucedida','você está pronto para fazer login');
-
-            navigation.goBack();
+            navigation.navigate('UserCreated');
         }catch(err){
             if(err instanceof yup.ValidationError){
                 const Errors = validationError(err);
                 FormRef.current?.setErrors(Errors);
                 return;
             }
-
+            console.log(err);
             Alert.alert(
                 'Erro de autenticação',
                 'erro ao fazer seu registro'    
             );
         }
-    },[]);
+    },[navigation]);
 
     return(
         <>
         <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            enabled    
+         style={{ flex:1 }}
+         behavior={Platform.OS === 'ios' ? 'padding': undefined}
+         enabled
         >
             <ScrollView
                 keyboardShouldPersistTaps = 'handled'

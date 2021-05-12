@@ -6,6 +6,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 interface ContainerProps{
     isfocused: boolean;
     hasError: boolean;
+    marginTop: number | undefined;
 }
 
 export const Container = styled.View<ContainerProps>`
@@ -27,12 +28,14 @@ export const Container = styled.View<ContainerProps>`
         border-color: red;
         border-width: 1px;
     `};
+
+    margin-top: ${(props) => props.marginTop ? props.marginTop : 0}px;
 `;
 
 export const InputText = styled.TextInput`
     flex: 1;
     background: #232129;
-    color: #666360;
+    color: #F4EDE8;
     border-radius: 10px;
     font-size: 16px;
 `;

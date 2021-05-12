@@ -7,6 +7,7 @@ import Profile from '../pages/Profile';
 import CreateAppointment from '../pages/CreateAppointment';
 import AppointmentCreated from '../pages/AppointmentCreated';
 
+
 const App = createStackNavigator();
 
 const AppRoutes:React.FC = () => {
@@ -22,7 +23,6 @@ const AppRoutes:React.FC = () => {
                 <App.Screen name="Dashboard" component={ Dashboard } ></App.Screen>
                 <App.Screen name="CreateAppointment" component={ CreateAppointment} ></App.Screen>
                 <App.Screen name="AppointmentCreated" component={ AppointmentCreated} ></App.Screen>
-                
                 <App.Screen  name="Profile" component={ Profile }></App.Screen>
         </App.Navigator>
     )

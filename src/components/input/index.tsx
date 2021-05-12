@@ -8,6 +8,7 @@ import { useField } from '@unform/core';
 interface InputProps extends TextInputProps{
     name: string;
     icon: string;
+    marginTop?: number;
 }
 
 interface InputRef {
@@ -18,7 +19,7 @@ interface inputValueReference{
     value: string;
 }
 
-const Input:React.ForwardRefRenderFunction<InputRef,InputProps> = ({name,icon, ...rest},ref) => {
+const Input:React.ForwardRefRenderFunction<InputRef,InputProps> = ({name,marginTop,icon, ...rest},ref) => {
     const inputElementRef = useRef<any>(null);
     const [ isfocused,setIsFocused ] = useState(false);
     const [ isFilled,setIsFilled] = useState(false);
@@ -60,7 +61,11 @@ const Input:React.ForwardRefRenderFunction<InputRef,InputProps> = ({name,icon, .
     },[fieldName,registerField])
 
     return(
-        <Container isfocused={isfocused} hasError={ !!error }>
+        <Container 
+            isfocused = { isfocused } 
+            hasError = { !!error } 
+            marginTop = { marginTop }
+        >
             <IconInput name={ icon } size={20} color={ isFilled || isfocused ? '#ff9000' : '#666360'}/>
             <InputText  
                 ref={ inputElementRef }
