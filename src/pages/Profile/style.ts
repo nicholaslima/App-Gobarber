@@ -43,7 +43,12 @@ export const Title = styled.Text`
 
 export const ButtonBack = styled(RectButton)``;
 export const ButtonSignout = styled(RectButton)``;
+export const ButtonAvatar = styled(RectButton)``;
+export const Footer = styled.View``;
 
-export const Footer = styled.View`
 
+export const ImageUpdate = styled.Image`
+    align-items: 'center';
+    width: 200px;
+    height: 200px;
 `;

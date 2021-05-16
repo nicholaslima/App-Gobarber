@@ -1,7 +1,6 @@
 
 
 import React, { useCallback, useEffect,useState } from 'react';
-import {  Button } from 'react-native';
 import { useAuth } from '../../context/authContext';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -66,7 +65,6 @@ const DashBoard: React.FC = () => {
                 </ProfileButton>
             </Header>
 
-            <Button title="sair" onPress={Logout}>sair</Button>
             <ProvidersList
                 data={ providers }
                 keyExtractor={ provider => provider.id }

@@ -31,6 +31,7 @@ interface signinType{
 interface AuthContextType {
     user: userType;
     loading: boolean;
+    updateUser(user: userType):Promise<void>
     signin(credentials: signinType): Promise<void>; 
     Logout(): Promise<void>
 }
@@ -78,6 +79,15 @@ const AuthProvider: React.FC = ({ children }) => {
        setData({ token,user });
     },[]);
 
+    const updateUser = useCallback( async (user) => {
+        await AsyncStorage.setItem( '@Gobarber/user',JSON.stringify(user));
+
+        setData({
+            user,
+            token: data.token
+        })
+    },[setData,data])
+
     const Logout = useCallback(async() => {
         await AsyncStorage.multiRemove(['@Gobarber/token','@Gobarber/user',]);
 
@@ -85,7 +95,7 @@ const AuthProvider: React.FC = ({ children }) => {
     },[]);
     
     return(
-        <AuthContext.Provider value={{ user: data.user,signin,Logout,loading }}>
+        <AuthContext.Provider value={{ user: data.user,signin,Logout,loading,updateUser }}>
             { children }
         </AuthContext.Provider>
     )

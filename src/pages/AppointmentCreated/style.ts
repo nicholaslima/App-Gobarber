@@ -43,7 +43,7 @@ export const Button = styled(RectButton)`
 
 export const ButtonText = styled.Text`
     color: #312E38;
-    font-size: 18;
+    font-size: 18px;
     font-family: 'RobotoSLab-Regular';
     text-transform: capitalize;
 `;

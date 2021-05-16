@@ -50,7 +50,7 @@ const Signup:React.FC = () => {
             await schema.validate(data,{
                 abortEarly: false
             });
-            console.log(data);
+
             await api.post('/users',data);
            
 
@@ -61,7 +61,7 @@ const Signup:React.FC = () => {
                 FormRef.current?.setErrors(Errors);
                 return;
             }
-            console.log(err);
+
             Alert.alert(
                 'Erro de autenticação',
                 'erro ao fazer seu registro'    

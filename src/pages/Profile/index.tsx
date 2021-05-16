@@ -1,14 +1,15 @@
 
 
 import React,{ useCallback, useRef } from 'react';
-import { KeyboardAvoidingView,ScrollView,TextInput,Platform } from 'react-native';
+import { KeyboardAvoidingView,ScrollView,TextInput, Alert} from 'react-native';
 import { useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
+import * as yup from 'yup';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import api from '../../service/api';
 import Input from '../../components/input';
 import Button from '../../components/button';
-
 import { useAuth  } from '../../context/authContext';
 
 import {
@@ -19,12 +20,22 @@ import {
     Title,
     ButtonBack,
     Footer,
-    ButtonSignout
+    ButtonSignout,
+    ButtonAvatar,
 } from './style';
+import validationErrors from '../../utils/validationErrors';
+
+interface UserType{
+    email: string;
+    old_password: string;
+    password: string;
+    name: string;
+    confirmPassword: string;
+}
 
 const Profile: React.FC = () => {
 
-    const { user,Logout } = useAuth();
+    const { user,Logout,updateUser } = useAuth();
     const { goBack } = useNavigation();
 
     const FomrRef = useRef<FormHandles>(null);
@@ -34,9 +45,80 @@ const Profile: React.FC = () => {
     const InputConfirmPasswordRef = useRef<TextInput>(null);
 
 
-    const updateUser = useCallback(() => {
+    const send = useCallback( async (data: UserType) => {
+        try{
+            FomrRef.current?.setErrors({});
+            const schema = yup.object().shape({
+                name: yup.string().required("nome obrigatório"),
+                email: yup.string().email().required('email obrigatório'),
+                old_password: yup.string(),
+                password: yup
+                    .string()
+                    .when('old_password',{
+                        is: (val) => !!val.length,
+                        then: yup.string().required('campo obrigatório'),
+                        otherwise: yup.string(),
+                    }),
+                confirmPassword: yup
+                    .string()
+                    .when('old_password',{
+                        is: (val) => !!val.length,
+                        then: yup.string().required('campo obrigatório'),
+                        otherwise: yup.string(),
+                    })
+                    .oneOf([yup.ref('password')],'confirmação incorreta'),
+            });
 
-    },[])
+
+            await schema.validate(data, {
+                abortEarly: false,
+            });
+
+            const { name,email,old_password,password } = data;
+
+            const formData = {
+                name,
+                email,
+                ...( password 
+                    ? {
+                        old_password,
+                        password,
+                    }
+                    : {}),
+            }
+    
+           
+
+            await api.put('/profile',formData)
+                    .then((response) => {
+                        updateUser(response.data);
+                    });
+
+            Alert.alert(
+                'usuário atualizado com sucesso',
+                'informações do perfil foram atualizadas'
+            );
+
+            goBack();
+        }catch(err){
+            if(err instanceof yup.ValidationError){
+                const errors = validationErrors(err);
+                FomrRef.current?.setErrors(errors);
+                return;
+            }
+
+            console.log(err);
+
+            Alert.alert(
+                'erro ao atualizar o usuario',
+                'tente atualizar seu usuario novamente'
+            )
+        }
+    },[]);
+
+
+
+
     return(
         <KeyboardAvoidingView
             style={{ flex: 1 }}   
@@ -57,14 +139,15 @@ const Profile: React.FC = () => {
                 </ButtonSignout>
             </Header>
             <Content>
-                <AvatarProfile source={{ uri: user.avatar_url }}></AvatarProfile>   
-                <Form ref= {FomrRef} onSubmit={ updateUser }>
+                <ButtonAvatar>
+                    <AvatarProfile source={{ uri: user.avatar_url }}></AvatarProfile>   
+                </ButtonAvatar>
 
+                <Form initialData={ user } ref= {FomrRef} onSubmit={ send }>
                     <Input 
                         autoCapitalize= "words"
                         name="name"
                         icon="user"
-                        placeholder={ user.name }
                         returnKeyType="next"
                         onSubmitEditing={() => {
                             InputEmailRef.current?.focus()
@@ -76,7 +159,7 @@ const Profile: React.FC = () => {
                         keyboardType="email-address"
                         name="email"
                         icon="mail"
-                        placeholder={ user.email }
+                        returnKeyType="next"
                         onSubmitEditing={() => {
                             InputPasswordRef.current?.focus()
                         }}
@@ -87,9 +170,10 @@ const Profile: React.FC = () => {
                         ref={ InputPasswordRef }
                         secureTextEntry
                         marginTop={32}
-                        name="password"
+                        name="old_password"
                         icon="unlock"
                         placeholder="senha atual"
+                        returnKeyType="next"
                         onSubmitEditing={() => {
                             InputNewPasswordRef.current?.focus()    
                         }}
@@ -97,10 +181,11 @@ const Profile: React.FC = () => {
 
                     <Input 
                         ref={ InputNewPasswordRef }
-                        name="newPassword"
+                        name="password"
                         secureTextEntry
                         icon="unlock"
-                        placeholder="nova senha"
+                        placeholder="nova sesadfnha"
+                        returnKeyType="next"
                         onSubmitEditing={() => {
                             InputConfirmPasswordRef.current?.focus()
                         }}
@@ -111,12 +196,14 @@ const Profile: React.FC = () => {
                         placeholder="confirme a senha"
                         ref={ InputConfirmPasswordRef }
                         name="confirmPassword"
+                        returnKeyType="send"
                         icon="unlock"
                     />
                     <Footer>
-                        <Button>Confirmar mudança</Button>
+                        <Button onPress={ () => FomrRef.current?.submitForm() }>Confirmar mudança</Button>
                     </Footer>
                 </Form> 
+
             </Content>
         </Container>
         </ScrollView>
